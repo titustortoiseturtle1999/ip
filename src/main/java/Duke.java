@@ -7,18 +7,18 @@ public class Duke {
     }
 
     public static Task[] append(Task[] list, String item) {
-        Task[] newList = Arrays.copyOf(list, list.length+1);
+        Task[] newTasks = Arrays.copyOf(list, list.length+1);
         Task newTask = new Task(item);
-        newList[list.length] = newTask;
-        return newList;
+        newTasks[list.length] = newTask;
+        return newTasks;
     }
 
-    public static void printTasks(Task[] Tasks) {
-        if (Tasks.length == 0) {
+    public static void printTasks(Task[] tasks) {
+        if (tasks.length == 0) {
             System.out.println("Wow, a crewmate without tasks? That's rare");
         } else {
-            for (int i = 0; i < Tasks.length; i++) {
-                System.out.println(i + 1 + ". " + Tasks[i].description + " " + Tasks[i].getStatusIcon());
+            for (int i = 0; i < tasks.length; i++) {
+                System.out.println(i + 1 + ". " + tasks[i].description + " " + tasks[i].getStatusIcon());
             }
         }
     }
@@ -32,84 +32,102 @@ public class Duke {
         System.out.println("undo: undo your marked tasks:\n- to undo a marked task 2, type \"undo 2\"");
     }
 
-    public static void markTask(String line, Task[] Tasks) {
-        String[] command = line.split(" ");
+    public static void markTask(String command, String stringIndex, Task[] tasks) {
         int index;
         try {
-            index = Integer.parseInt(command[1]);
+            index = Integer.parseInt(stringIndex);
         } catch (NumberFormatException e) {
             System.out.println("Not a valid task number!");
             return;
         }
-        if (index <= Tasks.length && index > 0) {
-            if (command[0].equals("done")) {
-                Tasks[index - 1].updateStatus(true);
+        if (index <= tasks.length && index > 0) {
+            if (command.equals("done")) {
+                tasks[index - 1].setStatus(true);
                 System.out.println("One step closer to catching the Imposter!");
             } else {
-                Tasks[index -1].updateStatus(false);
+                tasks[index -1].setStatus(false);
                 System.out.println("Oh no! The ship is falling apart!");
             }
         } else {
             System.out.println("Task not in list!");
         }
     }
-    public static Task[] handleCmd(String line, Task[] Tasks) {
+    
+    public static Task[] handleCommand(String line, Task[] tasks) {
+        String[] commandParameters = line.split(" ");
         if (line.equals("list")) {
-            printTasks(Tasks);
+            printTasks(tasks);
         } else if (line.equals("help")) {
             showCommands();
-        } else if ((line.split(" ")[0].equals("done") || (line.split(" ")[0].equals("undo")) && line.split(" ").length == 2)) {
-            markTask(line, Tasks);
+        } else if ((commandParameters[0].equals("done") || (commandParameters[0].equals("undo"))
+                && commandParameters.length == 2)) {
+            markTask(commandParameters[0], commandParameters[1], tasks);
         } else if (line.equals("logo")) {
             printLogo();
         } else if (!line.equals("bye")) {
-            Tasks = append(Tasks, line);
+            tasks = append(tasks, line);
             System.out.println("new task assigned to you: " + line);
         }
-        return Tasks;
+        return tasks;
     }
 
-    public static void task1EchoAndStore() {
+    public static void readInput() {
         Scanner in = new Scanner(System.in);
         String line = "";
-        Task[] Tasks = new Task[]{};
+        Task[] tasks = new Task[]{};
         while (!line.equals("bye")) {
             System.out.println("------------------------------");
             System.out.println("To view my commands, type \"help\"\nEnter a Task: ");
             line = in.nextLine();
-            Tasks = handleCmd(line, Tasks);
+            tasks = handleCommand(line, tasks);
         }
     }
 
     public static void greet() {
         System.out.println("------------------------------");
         System.out.println("I keep track of your crewmate tasks and find imposters! \nHow can i help you?");
-        task1EchoAndStore();
-        System.out.println(getRandomIntegerBetweenRange(0, 6) == 1 ? "You're the imposter? （°0°） How could you!" : "Yay we found the imposter! ヽ(^o^)ノ The ship is saved!");
+        readInput();
+        System.out.println(getRandomIntegerBetweenRange(0, 6) == 1 ?
+                "You're the imposter? （°0°） How could you!" :
+                "Yay we found the imposter! ヽ(^o^)ノ The ship is saved!");
     }
 
     public static void printLogo() {
-        String logo = "........................................\n"
-                + ".............@@@@@@@@@@@@@..............\n"
-                + ".........@@@@@&%%%%%%%%%@@@@@...........\n"
-                + ".......@@@@%%%%%%%%%%%%%%%%@@@..........\n"
-                + "...&&&&&&&&&&&&&&&&&&&%%%%%%@@@.........\n"
-                + "..&&&       ,,,,,,,((&&%%%%%&@@@........\n"
-                + ".&&&,,,,,,,,,,,,,,,((&&&%%%%&@@@@@@@@@..\n"
-                + ".(&&(((((,,,/((((((((&&%%%%%&&@@%%%%@@@.\n"
-                + "...&&&&((((((((((((&&&&%%%%%&&@@&&&&&@@.\n"
-                + "...,@@&&&&&&&&&&&&&&%%%%%%%%&&@@&&&&&@@.\n"
-                + "...&@@%%%%%%%%%%%%%%%%%%%%%%&&@@&&&&&@@@\n"
-                + "...@@@%%%%   AMON GUS   %%%&&&@@&&&&&@@@\n"
-                + "...&@@&%%%%%%%%%%%%%%%%%%%&&&&@@&&&&&@@@\n"
-                + "....@@&&&%%%%%%%%%%%%%%%&&&&&&@@&&&&&@@@\n"
-                + "....@@&&&&&&&&&&&&&&&&&&&&&&&&@@&&&&&@@.";
+        String logo = "................................................................................\n"
+                + "..................................... ... ......................................\n"
+                + ".........................&@@@@@@@@@@@@@@@@@@@@@@@@@%............................\n"
+                + "....................#@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@.........................\n"
+                + ".................@@@@@@@@@@@&%%%%%%%%%%%%%%%%%%%@@@@@@@@@&......................\n"
+                + "...............@@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%@@@@@@@.....................\n"
+                + ".............@@@@@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%@@@@@@....................\n"
+                + ".........%&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%%%%%%%%%%%%%%&&@@@@@...................\n"
+                + "......&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%%%%%%%%%%%%&@@@@@@..................\n"
+                + "....&&&&&&&,*          ,,,,,,,,,,,,,,(&&&&&&&%%%%%%%%%%&&@@@@@/.................\n"
+                + "...&&&&&&,              ,,,,,,,,,,,,,,(((&&&&&%%%%%%%%%&&&@@@@@.................\n"
+                + "../&&&&&,,*     ,,,,,,,,,,,,,,,,,,,,,,(((&&&&&&%%%%%%%%&&&@@@@@@@@@@@...........\n"
+                + "..&&&&&&,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(((((&&&&&%%%%%%%%&&&@@@@@@@@@@@@@@@@@.....\n"
+                + "..&&&&&%(,,,,,,,,,,,,,,,,,,,,,,,,/((((((((&&&&&%%%%%%%%&&&&@@@@@@##%&@@@@@@@....\n"
+                + "..(&&&&&(((((((((/,,,,,,/((((((((((((((((&&&&&%%%%%%%%%&&&&@@@@@%%%%%%%%@@@@@...\n"
+                + "...@&&&&&(((((((((((((((((((((((((((((((&&&&&&%%%%%%%%%&&&&@@@@@%%%%%%%%%@@@@...\n"
+                + ".....&&&&&&&&&(((((((((((((((((((((((&&&&&&&&%%%%%%%%%%&&&&@@@@@&&&&&&&&&@@@@@..\n"
+                + ".......&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&%%%%%%%%%%%%&&&&@@@@@&&&&&&&&&&@@@@..\n"
+                + "......,@@@@@&&&&&&&&&&&&&&&&&&&&&&&&&&&&%%%%%%%%%%%%%%%&&&&@@@@@&&&&&&&&&%@@@@..\n"
+                + "......#@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&@@@@@&&&&&&&&&&@@@@#.\n"
+                + "......&@@@@%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&@@@@@&&&&&&&&&&@@@@@.\n"
+                + "......@@@@@&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&&@@@@@&&&&&&&&&&@@@@@.\n"
+                + "......@@@@@&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&&@@@@@&&&&&&&&&&@@@@@.\n"
+                + "......@@@@@&&%%%%%%%%%%%%%%     AMON GUS     %%%%%%%%&&&&&&@@@@@&&&&&&&&&&@@@@@.\n"
+                + "......&@@@@%&&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&@@@@@&&&&&&&&&&@@@@@.\n"
+                + "....../@@@@&&&&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&@@@@@&&&&&&&&&%@@@@@.\n"
+                + ".......@@@@@&&&&&%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&@@@@@&&&&&&&&&@@@@@@.\n"
+                + ".......@@@@@&&&&&&&&&%%%%%%%%%%%%%%%%%%%%%%&&&&&&&&&&&&&&&&@@@@@&&&&&&&&&@@@@@..\n"
+                + ".......@@@@@&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@&&&&&&&&&@@@@@..\n"
+                + ".......*@@@@@&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@&&&&&&&&@@@@@...";
         System.out.println(logo);
 
     }
     public static void main(String[] args) {
         System.out.println("Hello! I'm Amon Gus");
-        System.out.println("------------------------------");
         printLogo();
         greet();
     }

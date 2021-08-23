@@ -11,7 +11,7 @@ public class Task {
         return (isDone ? "✓" : " ");
     }
 
-    public void updateStatus(boolean update) {
+    public void setStatus(boolean update) {
         this.isDone = update;
     }
 
