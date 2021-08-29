@@ -18,4 +18,16 @@ public class Task {
     public String getDescription() {
         return this.description;
     }
+
+    public boolean isDone() {
+        return isDone;
+    }
+
+    public String toString(boolean showStatus) {
+        if (showStatus) {
+            return this.getDescription() + " " + getStatusIcon();
+        } else {
+            return this.getDescription();
+        }
+    }
 }

@@ -1,15 +1,16 @@
+import java.security.spec.ECField;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.function.IntToDoubleFunction;
 
 public class Duke {
     public static double getRandomIntegerBetweenRange(double min, double max){
         return (int)(Math.random()*((max-min)+1))+min;
     }
 
-    public static Task[] append(Task[] list, String item) {
+    public static Task[] appendTask(Task[] list, Task task) {
         Task[] newTasks = Arrays.copyOf(list, list.length+1);
-        Task newTask = new Task(item);
-        newTasks[list.length] = newTask;
+        newTasks[list.length] = task;
         return newTasks;
     }
 
@@ -18,9 +19,53 @@ public class Duke {
             System.out.println("Wow, a crewmate without tasks? That's rare");
         } else {
             for (int i = 0; i < tasks.length; i++) {
-                System.out.println(i + 1 + ". " + tasks[i].description + " " + tasks[i].getStatusIcon());
+                System.out.println(i + 1 + ". " + tasks[i].toString(true));
             }
         }
+    }
+
+    public static Task[] addTask(Task[] tasks, String line) {
+        String[] commandParameters = line.split(" ");
+        switch (commandParameters[0]) {
+        case "todo": {
+            String description = line.replace("todo ", "");
+            ToDo newtodo = new ToDo(description);
+            tasks = appendTask(tasks, newtodo);
+            System.out.println("new ToDo assigned to you: " + newtodo.getDescription());
+            break;
+        }
+        case "deadline": {
+            // need to insert try here in case user does not put a # to indicate time
+            try {
+                int byIndex = line.indexOf("#");
+                String description = line.substring(0, byIndex - 1);
+                description = description.replace("deadline ", "");
+                Deadline newdeadline = new Deadline(description, line.substring(byIndex + 1));
+                tasks = appendTask(tasks, newdeadline);
+                System.out.println("new Deadline assigned to you: " + newdeadline.toString());
+            } catch (Exception e) {
+                System.out.println("The Deadline format is: deadline <name of deadline> #<do by date>");
+            }
+            break;
+        }
+        case "event": {
+            try {
+                int byIndex = line.indexOf("#");
+                String description = line.substring(0, byIndex - 1);
+                description = description.replace("event ", "");
+                Event newEvent = new Event(description, line.substring(byIndex + 1));
+                tasks = appendTask(tasks, newEvent);
+                System.out.println("new Event assigned to you: " + newEvent.toString());
+            } catch (Exception e) {
+                System.out.println("The Event format is: event <name of event> #date and duration");
+            }
+            break;
+        }
+        default: {
+            System.out.println("Not a valid Todo, Deadline or Event");
+        }
+        }
+        return tasks;
     }
 
     public static void showCommands() {
@@ -30,6 +75,27 @@ public class Duke {
         System.out.println("list: list your tasks");
         System.out.println("done: mark your tasks as done\n- to mark item 2 as done, type \"done 2\"");
         System.out.println("undo: undo your marked tasks:\n- to undo a marked task 2, type \"undo 2\"");
+        System.out.println("Todos do not have a date attached to it");
+        System.out.println("Deadlines are tasks to be done by a specific date");
+        System.out.println("Events are tasks that start and end at specific times");
+    }
+
+    public static void showProgressBar(Task[] tasks) {
+        int totalLength = 20;
+        double completedTasks = 0;
+        for (Task task : tasks) {
+            if (task.isDone()) {
+                completedTasks++;
+            }
+        }
+        int filledBoxes = (int)((completedTasks/tasks.length) * totalLength);
+        for (int i = 0; i < filledBoxes; i++) {
+            System.out.print("⬛");
+        }
+        for (int i = filledBoxes; i < totalLength; i++) {
+            System.out.print("⬜");
+        }
+        System.out.println("");
     }
 
     public static void markTask(String command, String stringIndex, Task[] tasks) {
@@ -48,6 +114,7 @@ public class Duke {
                 tasks[index -1].setStatus(false);
                 System.out.println("Oh no! The ship is falling apart!");
             }
+            showProgressBar(tasks);
         } else {
             System.out.println("Task not in list!");
         }
@@ -57,16 +124,21 @@ public class Duke {
         String[] commandParameters = line.split(" ");
         if (line.equals("list")) {
             printTasks(tasks);
+            showProgressBar(tasks);
         } else if (line.equals("help")) {
             showCommands();
         } else if ((commandParameters[0].equals("done") || (commandParameters[0].equals("undo"))
                 && commandParameters.length == 2)) {
-            markTask(commandParameters[0], commandParameters[1], tasks);
+            try {
+                markTask(commandParameters[0], commandParameters[1], tasks);
+            } catch (Exception e) {
+                System.out.println("Indicate which task to mark!");
+            }
         } else if (line.equals("logo")) {
             printLogo();
         } else if (!line.equals("bye")) {
-            tasks = append(tasks, line);
-            System.out.println("new task assigned to you: " + line);
+            tasks = addTask(tasks, line);
+            System.out.println("You have " + tasks.length + " tasks");
         }
         return tasks;
     }
@@ -77,7 +149,7 @@ public class Duke {
         Task[] tasks = new Task[]{};
         while (!line.equals("bye")) {
             System.out.println("------------------------------");
-            System.out.println("To view my commands, type \"help\"\nEnter a Task: ");
+            System.out.println("To view my commands, type \"help\"\nEnter a Todo, Deadline, or Event: ");
             line = in.nextLine();
             tasks = handleCommand(line, tasks);
         }
