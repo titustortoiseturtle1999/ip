@@ -127,13 +127,9 @@ public class Duke {
             showProgressBar(tasks);
         } else if (line.equals("help")) {
             showCommands();
-        } else if ((commandParameters[0].equals("done") || (commandParameters[0].equals("undo"))
-                && commandParameters.length == 2)) {
-            try {
-                markTask(commandParameters[0], commandParameters[1], tasks);
-            } catch (Exception e) {
-                System.out.println("Indicate which task to mark!");
-            }
+        } else if ((commandParameters[0].equals("done") || commandParameters[0].equals("undo"))
+                && commandParameters.length == 2) {
+            markTask(commandParameters[0], commandParameters[1], tasks);
         } else if (line.equals("logo")) {
             printLogo();
         } else if (!line.equals("bye")) {
