@@ -10,6 +10,7 @@ public class Deadline extends Task{
     public String toString() {
         return deadlineLabel + " " +  super.getDescription() + " (by: " + by + ")";
     }
+    @Override
     public String toString(boolean showStatus) {
         if (showStatus) {
             return toString() + " " + getStatusIcon();
@@ -17,8 +18,6 @@ public class Deadline extends Task{
             return toString();
         }
     }
-
-
     public String getBy() {
         return by;
     }

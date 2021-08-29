@@ -24,8 +24,23 @@ public class Duke {
         }
     }
 
-    public static Task[] addTask(Task[] tasks, String line) {
-        String[] commandParameters = line.split(" ");
+    public static Deadline processDeadline(String line) {
+        int byIndex = line.indexOf("#");
+        String description = line.substring(0, byIndex - 1);
+        description = description.replace("deadline ", "");
+        Deadline newdeadline = new Deadline(description, line.substring(byIndex + 1));
+        return newdeadline;
+    }
+
+    public static Event processEvent(String line) {
+        int byIndex = line.indexOf("#");
+        String description = line.substring(0, byIndex - 1);
+        description = description.replace("event ", "");
+        Event newEvent = new Event(description, line.substring(byIndex + 1));
+        return newEvent;
+    }
+
+    public static Task[] addTask(Task[] tasks, String line, String[] commandParameters) {
         switch (commandParameters[0]) {
         case "todo": {
             String description = line.replace("todo ", "");
@@ -35,12 +50,8 @@ public class Duke {
             break;
         }
         case "deadline": {
-            // need to insert try here in case user does not put a # to indicate time
             try {
-                int byIndex = line.indexOf("#");
-                String description = line.substring(0, byIndex - 1);
-                description = description.replace("deadline ", "");
-                Deadline newdeadline = new Deadline(description, line.substring(byIndex + 1));
+                Deadline newdeadline = processDeadline(line);
                 tasks = appendTask(tasks, newdeadline);
                 System.out.println("new Deadline assigned to you: " + newdeadline.toString());
             } catch (Exception e) {
@@ -50,10 +61,7 @@ public class Duke {
         }
         case "event": {
             try {
-                int byIndex = line.indexOf("#");
-                String description = line.substring(0, byIndex - 1);
-                description = description.replace("event ", "");
-                Event newEvent = new Event(description, line.substring(byIndex + 1));
+                Event newEvent = processEvent(line);
                 tasks = appendTask(tasks, newEvent);
                 System.out.println("new Event assigned to you: " + newEvent.toString());
             } catch (Exception e) {
@@ -133,7 +141,7 @@ public class Duke {
         } else if (line.equals("logo")) {
             printLogo();
         } else if (!line.equals("bye")) {
-            tasks = addTask(tasks, line);
+            tasks = addTask(tasks, line, commandParameters);
             System.out.println("You have " + tasks.length + " tasks");
         }
         return tasks;
