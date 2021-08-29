@@ -4,6 +4,9 @@ import java.util.Scanner;
 import java.util.function.IntToDoubleFunction;
 
 public class Duke {
+
+    public static final String LINE_SEPARATOR = "------------------------------";
+
     public static double getRandomIntegerBetweenRange(double min, double max){
         return (int)(Math.random()*((max-min)+1))+min;
     }
@@ -77,7 +80,7 @@ public class Duke {
     }
 
     public static void showCommands() {
-        System.out.println("------------------------------");
+        System.out.println(LINE_SEPARATOR);
         System.out.println("bye: exit program");
         System.out.println("logo: display my logo again!");
         System.out.println("list: list your tasks");
@@ -152,15 +155,15 @@ public class Duke {
         String line = "";
         Task[] tasks = new Task[]{};
         while (!line.equals("bye")) {
-            System.out.println("------------------------------");
+            System.out.println(LINE_SEPARATOR);
             System.out.println("To view my commands, type \"help\"\nEnter a Todo, Deadline, or Event: ");
             line = in.nextLine();
             tasks = handleCommand(line, tasks);
         }
     }
 
-    public static void greet() {
-        System.out.println("------------------------------");
+    public static void run() {
+        System.out.println(LINE_SEPARATOR);
         System.out.println("I keep track of your crewmate tasks and find imposters! \nHow can i help you?");
         readInput();
         System.out.println(getRandomIntegerBetweenRange(0, 6) == 1 ?
@@ -200,11 +203,10 @@ public class Duke {
                 + ".......@@@@@&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@&&&&&&&&&@@@@@..\n"
                 + ".......*@@@@@&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@&&&&&&&&@@@@@...";
         System.out.println(logo);
-
     }
     public static void main(String[] args) {
         System.out.println("Hello! I'm Amon Gus");
         printLogo();
-        greet();
+        run();
     }
 }
