@@ -1,19 +1,1 @@
-todo go to USS
-todo start crochet hobby
-done 1
-undo 2
-deadline grocery shopping #this week
-undo 1
-event 2113T tp meeting #2nd sept 2-4pm
-done 7
-done 2t2323
-list
-done
-deadline deadline without date
-event event without date
-undo
-list
-list 3
-event 7
-deadline 5
 bye

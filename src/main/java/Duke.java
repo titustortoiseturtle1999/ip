@@ -1,15 +1,10 @@
-import java.security.spec.ECField;
 import java.util.Arrays;
 import java.util.Scanner;
-import java.util.function.IntToDoubleFunction;
+
 
 public class Duke {
 
-    public static final String LINE_SEPARATOR = "------------------------------";
-
-    public static double getRandomIntegerBetweenRange(double min, double max){
-        return (int)(Math.random()*((max-min)+1))+min;
-    }
+    public static final String LINE_SEPARATOR = "--------------------------------------------------------------";
 
     public static Task[] appendTask(Task[] list, Task task) {
         Task[] newTasks = Arrays.copyOf(list, list.length+1);
@@ -31,8 +26,8 @@ public class Duke {
         int byIndex = line.indexOf("#");
         String description = line.substring(0, byIndex - 1);
         description = description.replace("deadline ", "");
-        Deadline newdeadline = new Deadline(description, line.substring(byIndex + 1));
-        return newdeadline;
+        Deadline newDeadline = new Deadline(description, line.substring(byIndex + 1));
+        return newDeadline;
     }
 
     public static Event processEvent(String line) {
@@ -46,17 +41,27 @@ public class Duke {
     public static Task[] addTask(Task[] tasks, String line, String[] commandParameters) {
         switch (commandParameters[0]) {
         case "todo": {
-            String description = line.replace("todo ", "");
-            ToDo newtodo = new ToDo(description);
-            tasks = appendTask(tasks, newtodo);
-            System.out.println("new ToDo assigned to you: " + newtodo.getDescription());
+            try {
+                if (commandParameters.length < 2) {
+                    throw new NoDescriptionException();
+                }
+                String description = line.replace("todo ", "");
+                ToDo newTodo = new ToDo(description);
+                tasks = appendTask(tasks, newTodo);
+                System.out.println("new ToDo assigned to you: " + newTodo.getDescription());
+            } catch (NoDescriptionException e) {
+                System.out.println("Trying to assign an empty todo? The audacity.");
+            }
             break;
         }
         case "deadline": {
             try {
-                Deadline newdeadline = processDeadline(line);
-                tasks = appendTask(tasks, newdeadline);
-                System.out.println("new Deadline assigned to you: " + newdeadline.toString());
+                if (commandParameters.length < 2) {
+                    throw new NoDescriptionException();
+                }
+                Deadline newDeadline = processDeadline(line);
+                tasks = appendTask(tasks, newDeadline);
+                System.out.println("new Deadline assigned to you: " + newDeadline.toString());
             } catch (Exception e) {
                 System.out.println("The Deadline format is: deadline <name of deadline> #<do by date>");
             }
@@ -73,7 +78,7 @@ public class Duke {
             break;
         }
         default: {
-            System.out.println("Not a valid Todo, Deadline or Event");
+            System.out.println("Not a command! Get your act together or the imposters are gonna win!");
         }
         }
         return tasks;
@@ -122,7 +127,7 @@ public class Duke {
                 tasks[index - 1].setStatus(true);
                 System.out.println("One step closer to catching the Imposter!");
             } else {
-                tasks[index -1].setStatus(false);
+                tasks[index - 1].setStatus(false);
                 System.out.println("Oh no! The ship is falling apart!");
             }
             showProgressBar(tasks);
@@ -166,7 +171,7 @@ public class Duke {
         System.out.println(LINE_SEPARATOR);
         System.out.println("I keep track of your crewmate tasks and find imposters! \nHow can i help you?");
         readInput();
-        System.out.println(getRandomIntegerBetweenRange(0, 6) == 1 ?
+        System.out.println(Helper.getRandomIntegerBetweenRange(0, 6) == 1 ?
                 "You're the imposter? （°0°） How could you!" :
                 "Yay we found the imposter! ヽ(^o^)ノ The ship is saved!");
     }
@@ -204,6 +209,7 @@ public class Duke {
                 + ".......*@@@@@&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&@@@@@&&&&&&&&@@@@@...";
         System.out.println(logo);
     }
+
     public static void main(String[] args) {
         System.out.println("Hello! I'm Amon Gus");
         printLogo();
