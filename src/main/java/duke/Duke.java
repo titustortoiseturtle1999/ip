@@ -1,3 +1,11 @@
+package duke;
+
+import exception.NoDescriptionException;
+import task.Deadline;
+import task.Event;
+import task.Task;
+import task.ToDo;
+
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -130,7 +138,7 @@ public class Duke {
             }
             showProgressBar(tasks);
         } else {
-            System.out.println("Task not in list!");
+            System.out.println("task.Task not in list!");
         }
     }
     

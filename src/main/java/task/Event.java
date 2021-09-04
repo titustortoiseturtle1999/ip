@@ -1,3 +1,5 @@
+package task;
+
 public class Event extends Task{
     private String at;
     private final String eventLabel = "[E]";
