@@ -34,5 +34,5 @@ I keep track of your crewmate tasks and find imposters!
 How can i help you?
 --------------------------------------------------------------
 To view my commands, type "help"
-Enter a Todo, Deadline, or Event: 
+Enter a Todo, task.Deadline, or task.Event:
 Yay we found the imposter! ヽ(^o^)ノ The ship is saved!
