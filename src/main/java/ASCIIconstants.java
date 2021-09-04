@@ -1,5 +1,7 @@
 public final class ASCIIconstants {
-    private ASCIIconstants () {}
+    private ASCIIconstants () {
+
+    }
     public static final String logo
             = "................................................................................\n"
             + "..................................... ... ......................................\n"
