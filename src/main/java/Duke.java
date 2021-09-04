@@ -26,16 +26,14 @@ public class Duke {
         int byIndex = line.indexOf("#");
         String description = line.substring(0, byIndex - 1);
         description = description.replace("deadline ", "");
-        Deadline newDeadline = new Deadline(description, line.substring(byIndex + 1));
-        return newDeadline;
+        return new Deadline(description, line.substring(byIndex + 1));
     }
 
     public static Event processEvent(String line) {
         int byIndex = line.indexOf("#");
         String description = line.substring(0, byIndex - 1);
         description = description.replace("event ", "");
-        Event newEvent = new Event(description, line.substring(byIndex + 1));
-        return newEvent;
+        return new Event(description, line.substring(byIndex + 1));
     }
 
     public static Task[] addTask(Task[] tasks, String line, String[] commandParameters) {
@@ -61,7 +59,7 @@ public class Duke {
                 }
                 Deadline newDeadline = processDeadline(line);
                 tasks = appendTask(tasks, newDeadline);
-                System.out.println("new Deadline assigned to you: " + newDeadline.toString());
+                System.out.println("new Deadline assigned to you: " + newDeadline);
             } catch (Exception e) {
                 System.out.println("The Deadline format is: deadline <name of deadline> #<do by date>");
             }
@@ -71,7 +69,7 @@ public class Duke {
             try {
                 Event newEvent = processEvent(line);
                 tasks = appendTask(tasks, newEvent);
-                System.out.println("new Event assigned to you: " + newEvent.toString());
+                System.out.println("new Event assigned to you: " + newEvent);
             } catch (Exception e) {
                 System.out.println("The Event format is: event <name of event> #date and duration");
             }
@@ -111,7 +109,7 @@ public class Duke {
         for (int i = filledBoxes; i < totalLength; i++) {
             System.out.print("⬜");
         }
-        System.out.println("");
+        System.out.println();
     }
 
     public static void markTask(String command, String stringIndex, Task[] tasks) {
