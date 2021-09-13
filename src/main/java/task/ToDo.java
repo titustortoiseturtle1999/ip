@@ -1,13 +1,17 @@
 package task;
 
 public class ToDo extends Task{
-    private final String todoLabel = "[T]";
-
     public ToDo(String description) {
-        super(description);
+        super(description, "T");
     }
     @Override
     public String toString(boolean showStatus) {
-        return todoLabel + " " + super.toString(showStatus);
+        return "[" + this.classLabel + "] " + super.toString(showStatus);
     }
+
+    @Override
+    public String formatForFile() {
+        return "T # " + this.getStatusIcon() + " # " + this.getDescription();
+    }
+
 }

@@ -2,15 +2,14 @@ package task;
 
 public class Deadline extends Task{
     protected String by;
-    protected final String deadlineLabel = "[D]";
 
     public Deadline(String description, String by) {
-        super(description);
+        super(description, "D");
         this.by = by;
     }
 
     public String toString() {
-        return deadlineLabel + " " +  super.getDescription() + " (by: " + by + ")";
+        return "[" + this.classLabel + "] " +  super.getDescription() + " (by: " + by + ")";
     }
     @Override
     public String toString(boolean showStatus) {
@@ -22,5 +21,10 @@ public class Deadline extends Task{
     }
     public String getBy() {
         return by;
+    }
+
+    @Override
+    public String formatForFile() {
+        return "D # " + this.getStatusIcon() + " # " + this.getDescription() + " # " + this.getBy();
     }
 }

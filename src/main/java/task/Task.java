@@ -3,10 +3,17 @@ package task;
 public class Task {
     protected String description;
     protected boolean isDone;
+    protected String classLabel;
 
     public Task (String description) {
         this.description = description;
         this.isDone = false;
+        this.classLabel = "Task";
+    }
+    public Task (String description, String classLabel) {
+        this.description = description;
+        this.isDone = false;
+        this.classLabel = classLabel;
     }
 
     public String getStatusIcon() {
@@ -32,4 +39,8 @@ public class Task {
             return this.getDescription();
         }
     }
+
+    public String getClassIcon() {return classLabel;}
+
+    public String formatForFile() {return "Invalid! Cannot write type Task to file";}
 }
