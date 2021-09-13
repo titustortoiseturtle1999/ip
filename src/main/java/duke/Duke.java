@@ -1,11 +1,17 @@
 package duke;
 
+import exception.DataFileCorruptedException;
 import exception.NoDescriptionException;
 import task.Deadline;
 import task.Event;
 import task.Task;
 import task.ToDo;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -13,19 +19,14 @@ import java.util.Scanner;
 public class Duke {
 
     public static final String LINE_SEPARATOR = "--------------------------------------------------------------";
+    public static final String AMON_GUS_PATH = "data/amon_gus.txt";
 
-    public static Task[] appendTask(Task[] list, Task task) {
-        Task[] newTasks = Arrays.copyOf(list, list.length+1);
-        newTasks[list.length] = task;
-        return newTasks;
-    }
-
-    public static void printTasks(Task[] tasks) {
-        if (tasks.length == 0) {
+    public static void printTasks(ArrayList<Task> tasks) {
+        if (tasks.size() == 0) {
             System.out.println("Wow, a crewmate without tasks? That's rare");
         } else {
-            for (int i = 0; i < tasks.length; i++) {
-                System.out.println(i + 1 + ". " + tasks[i].toString(true));
+            for (int i = 0; i < tasks.size(); i++) {
+                System.out.println(i + 1 + ". " + tasks.get(i).toString(true));
             }
         }
     }
@@ -44,7 +45,7 @@ public class Duke {
         return new Event(description, line.substring(byIndex + 1));
     }
 
-    public static Task[] addTask(Task[] tasks, String line, String[] commandParameters) {
+    public static void addTask(ArrayList<Task> tasks, String line, String[] commandParameters) {
         switch (commandParameters[0]) {
         case "todo": {
             try {
@@ -53,7 +54,7 @@ public class Duke {
                 }
                 String description = line.replace("todo ", "");
                 ToDo newTodo = new ToDo(description);
-                tasks = appendTask(tasks, newTodo);
+                tasks.add(newTodo);
                 System.out.println("new ToDo assigned to you: " + newTodo.getDescription());
             } catch (NoDescriptionException e) {
                 System.out.println("Trying to assign an empty todo? The audacity.");
@@ -66,7 +67,7 @@ public class Duke {
                     throw new NoDescriptionException();
                 }
                 Deadline newDeadline = processDeadline(line);
-                tasks = appendTask(tasks, newDeadline);
+                tasks.add(newDeadline);
                 System.out.println("new Deadline assigned to you: " + newDeadline);
             } catch (Exception e) {
                 System.out.println("The Deadline format is: deadline <name of deadline> #<do by date>");
@@ -76,7 +77,7 @@ public class Duke {
         case "event": {
             try {
                 Event newEvent = processEvent(line);
-                tasks = appendTask(tasks, newEvent);
+                tasks.add(newEvent);
                 System.out.println("new Event assigned to you: " + newEvent);
             } catch (Exception e) {
                 System.out.println("The Event format is: event <name of event> #date and duration");
@@ -87,7 +88,6 @@ public class Duke {
             System.out.println("Not a command! Get your act together or the imposters are gonna win!");
         }
         }
-        return tasks;
     }
 
     public static void showCommands() {
@@ -97,20 +97,21 @@ public class Duke {
         System.out.println("list: list your tasks");
         System.out.println("done: mark your tasks as done\n- to mark item 2 as done, type \"done 2\"");
         System.out.println("undo: undo your marked tasks:\n- to undo a marked task 2, type \"undo 2\"");
+        System.out.println("del x: delete task number x");
         System.out.println("Todos do not have a date attached to it");
         System.out.println("Deadlines are tasks to be done by a specific date");
         System.out.println("Events are tasks that start and end at specific times");
     }
 
-    public static void showProgressBar(Task[] tasks) {
+    public static void showProgressBar(ArrayList<Task> tasks) {
         int totalLength = 20;
-        double completedTasks = 0;
+        int completedTasks = 0;
         for (Task task : tasks) {
             if (task.isDone()) {
                 completedTasks++;
             }
         }
-        int filledBoxes = (int)((completedTasks/tasks.length) * totalLength);
+        int filledBoxes = tasks.size() == 0 ? 0 : (int) ((completedTasks / tasks.size()) * totalLength);
         for (int i = 0; i < filledBoxes; i++) {
             System.out.print("⬛");
         }
@@ -120,7 +121,7 @@ public class Duke {
         System.out.println();
     }
 
-    public static void markTask(String command, String stringIndex, Task[] tasks) {
+    public static void markTask(String command, String stringIndex, ArrayList<Task> tasks) {
         int index;
         try {
             index = Integer.parseInt(stringIndex);
@@ -128,21 +129,21 @@ public class Duke {
             System.out.println("Not a valid task number!");
             return;
         }
-        if (index <= tasks.length && index > 0) {
+        if (index <= tasks.size() && index > 0) {
             if (command.equals("done")) {
-                tasks[index - 1].setStatus(true);
+                tasks.get(index - 1).setStatus(true);
                 System.out.println("One step closer to catching the Imposter!");
             } else {
-                tasks[index - 1].setStatus(false);
+                tasks.get(index - 1).setStatus(false);
                 System.out.println("Oh no! The ship is falling apart!");
             }
             showProgressBar(tasks);
         } else {
-            System.out.println("task.Task not in list!");
+            System.out.println("Task not in list!");
         }
     }
-    
-    public static Task[] handleCommand(String line, Task[] tasks) {
+
+    public static void handleCommand(String line, ArrayList<Task> tasks) {
         String[] commandParameters = line.split(" ");
         if (line.equals("list")) {
             printTasks(tasks);
@@ -154,22 +155,134 @@ public class Duke {
             markTask(commandParameters[0], commandParameters[1], tasks);
         } else if (line.equals("logo")) {
             System.out.println(ASCIIconstants.logo);
-        } else if (!line.equals("bye")) {
-            tasks = addTask(tasks, line, commandParameters);
-            System.out.println("You have " + tasks.length + " tasks");
+        } else if (commandParameters[0].equals("del") && commandParameters.length == 2) {
+            deleteTask(commandParameters[1], tasks);
+        } else if (commandParameters[0].equals("todo")
+                || commandParameters[0].equals("deadline")
+                || commandParameters[0].equals("event")) {
+            addTask(tasks, line, commandParameters);
+            System.out.println("You have " + tasks.size() + " tasks");
+        } else {
+            System.out.println("Invalid input!");
         }
-        return tasks;
+        saveData(tasks);
+    }
+
+    public static void saveData(ArrayList<Task> tasks) {
+        try {
+            FileWriter fw = new FileWriter(AMON_GUS_PATH);
+            for (Task task: tasks) {
+                fw.write(task.formatForFile());
+                fw.write(System.lineSeparator());
+            }
+            fw.close();
+        } catch (IOException e) {
+            System.out.println("Error while saving to file amon_gus.txt.");
+        }
+    }
+    public static void deleteTask(String stringIndex, ArrayList<Task> tasks) {
+        int index;
+        try {
+            index = Integer.parseInt(stringIndex);
+        } catch (NumberFormatException e) {
+            System.out.println("Not a valid task number!");
+            return;
+        }
+        try {
+            tasks.remove(index - 1);
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("Task not in list!");
+        }
+    }
+
+    public static void handleT (ArrayList<Task> tasks, String[] parameters) throws DataFileCorruptedException {
+        try {
+            String description = parameters[2];
+            ToDo newTodo = new ToDo(description);
+            newTodo.setStatus(parameters[1].equals("✓"));
+            tasks.add(newTodo);
+        } catch (Exception e) {
+            throw new DataFileCorruptedException();
+        }
+    }
+
+    public static void handleD (ArrayList<Task> tasks, String[] parameters) throws DataFileCorruptedException{
+        try {
+            String description = parameters[2];
+            String deadline = parameters[3];
+            Deadline newDeadline = new Deadline(description, deadline);
+            newDeadline.setStatus(parameters[1].equals("✓"));
+            tasks.add(newDeadline);
+        } catch (Exception e) {
+            throw new DataFileCorruptedException();
+        }
+    }
+
+    public static void handleE (ArrayList<Task> tasks, String[] parameters) throws DataFileCorruptedException{
+        try {
+            String description = parameters[2];
+            String at = parameters[3];
+            Deadline newEvent = new Deadline(description, at);
+            newEvent.setStatus(parameters[1].equals("✓"));
+            tasks.add(newEvent);
+        } catch (Exception e) {
+            throw new DataFileCorruptedException();
+        }
+    }
+    public static void addToTasks(String input, ArrayList<Task> tasks) {
+        String[] parameters = input.split(" # ");
+        try {
+            switch (parameters[0]) {
+            case "T": {
+                handleT(tasks, parameters);
+                break;
+            }
+            case "D": {
+                handleD(tasks, parameters);
+                break;
+            }
+            case "E": {
+                handleE(tasks, parameters);
+                break;
+            }
+            default: {
+                System.out.println("Data file data/amon_gus.txt corrupted!");
+                break;
+            }
+            }
+        } catch (DataFileCorruptedException e) {
+            System.out.println("Data file data/amon_gus.txt corrupted!");
+        }
+
+    }
+
+
+    public static void readFile(ArrayList<Task> tasks) throws FileNotFoundException{
+        File f = new File(AMON_GUS_PATH);
+        Scanner s = new Scanner(f);
+        while (s.hasNext()) {
+            addToTasks(s.nextLine(), tasks);
+        }
+    }
+
+    public static void fileIO(ArrayList<Task> tasks) {
+        try {
+            readFile(tasks);
+        } catch (FileNotFoundException e) {
+            File f = new File (AMON_GUS_PATH);
+        }
     }
 
     public static void readInput() {
         Scanner in = new Scanner(System.in);
         String line = "";
-        Task[] tasks = new Task[]{};
+        ArrayList<Task> tasks = new ArrayList<>();
+        fileIO(tasks);
         while (!line.equals("bye")) {
             System.out.println(LINE_SEPARATOR);
             System.out.println("To view my commands, type \"help\"\nEnter a Todo, Deadline, or Event: ");
             line = in.nextLine();
-            tasks = handleCommand(line, tasks);
+            handleCommand(line, tasks);
         }
     }
 

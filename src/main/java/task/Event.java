@@ -2,15 +2,14 @@ package task;
 
 public class Event extends Task{
     private String at;
-    private final String eventLabel = "[E]";
 
     public Event(String description, String at) {
-        super(description);
+        super(description, "E");
         this.at = at;
     }
     @Override
     public String toString() {
-        return eventLabel + " " + super.getDescription() + " (at: " + this.at + ")";
+        return "[" + this.classLabel + "] " + super.getDescription() + " (at: " + this.at + ")";
     }
     public String toString(boolean showStatus) {
         if (showStatus) {
@@ -20,8 +19,12 @@ public class Event extends Task{
         }
     }
 
-
     public String getAt() {
         return this.at;
+    }
+
+    @Override
+    public String formatForFile() {
+        return "E # " + this.getStatusIcon() + " # " + this.getDescription() + " # " + this.getAt();
     }
 }
