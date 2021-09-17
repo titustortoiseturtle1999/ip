@@ -1,26 +1,26 @@
 package duke;
 
-import exception.DataFileCorruptedException;
-import exception.NoDescriptionException;
+import Exceptions.DataFileCorruptedException;
+import Exceptions.NoDescriptionException;
 import task.Deadline;
 import task.Event;
 import task.Task;
 import task.ToDo;
+import Constants.Constants;
+import Constants.ASCIIconstants;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class Duke {
-
-    public static final String LINE_SEPARATOR = "--------------------------------------------------------------";
-    public static final String AMON_GUS_PATH = "data/amon_gus.txt";
-
     public static void printTasks(ArrayList<Task> tasks) {
         if (tasks.size() == 0) {
             System.out.println("Wow, a crewmate without tasks? That's rare");
@@ -63,9 +63,6 @@ public class Duke {
         }
         case "deadline": {
             try {
-                if (commandParameters.length < 2) {
-                    throw new NoDescriptionException();
-                }
                 Deadline newDeadline = processDeadline(line);
                 tasks.add(newDeadline);
                 System.out.println("new Deadline assigned to you: " + newDeadline);
@@ -91,7 +88,7 @@ public class Duke {
     }
 
     public static void showCommands() {
-        System.out.println(LINE_SEPARATOR);
+        System.out.println(Constants.LINE_SEPARATOR);
         System.out.println("bye: exit program");
         System.out.println("logo: display my logo again!");
         System.out.println("list: list your tasks");
@@ -111,12 +108,12 @@ public class Duke {
                 completedTasks++;
             }
         }
-        int filledBoxes = tasks.size() == 0 ? 0 : (int) ((completedTasks / tasks.size()) * totalLength);
+        int filledBoxes = tasks.size() == 0 ? 0 : (completedTasks * totalLength) / tasks.size();
         for (int i = 0; i < filledBoxes; i++) {
-            System.out.print("⬛");
+            System.out.print(Constants.FILLED_BOX);
         }
         for (int i = filledBoxes; i < totalLength; i++) {
-            System.out.print("⬜");
+            System.out.print(Constants.EMPTY_BOX);
         }
         System.out.println();
     }
@@ -170,7 +167,7 @@ public class Duke {
 
     public static void saveData(ArrayList<Task> tasks) {
         try {
-            FileWriter fw = new FileWriter(AMON_GUS_PATH);
+            FileWriter fw = new FileWriter(Constants.AMON_GUS_PATH);
             for (Task task: tasks) {
                 fw.write(task.formatForFile());
                 fw.write(System.lineSeparator());
@@ -195,81 +192,55 @@ public class Duke {
         }
     }
 
-    public static void handleT (ArrayList<Task> tasks, String[] parameters) throws DataFileCorruptedException {
-        try {
-            String description = parameters[2];
-            ToDo newTodo = new ToDo(description);
-            newTodo.setStatus(parameters[1].equals("✓"));
-            tasks.add(newTodo);
-        } catch (Exception e) {
-            throw new DataFileCorruptedException();
-        }
-    }
-
-    public static void handleD (ArrayList<Task> tasks, String[] parameters) throws DataFileCorruptedException{
-        try {
-            String description = parameters[2];
-            String deadline = parameters[3];
-            Deadline newDeadline = new Deadline(description, deadline);
-            newDeadline.setStatus(parameters[1].equals("✓"));
-            tasks.add(newDeadline);
-        } catch (Exception e) {
-            throw new DataFileCorruptedException();
-        }
-    }
-
-    public static void handleE (ArrayList<Task> tasks, String[] parameters) throws DataFileCorruptedException{
-        try {
-            String description = parameters[2];
-            String at = parameters[3];
-            Deadline newEvent = new Deadline(description, at);
-            newEvent.setStatus(parameters[1].equals("✓"));
-            tasks.add(newEvent);
-        } catch (Exception e) {
-            throw new DataFileCorruptedException();
-        }
-    }
     public static void addToTasks(String input, ArrayList<Task> tasks) {
         String[] parameters = input.split(" # ");
         try {
-            switch (parameters[0]) {
+            switch (parameters[0]){
             case "T": {
-                handleT(tasks, parameters);
+                ToDo newToDo = new ToDo(parameters);
+                tasks.add(newToDo);
                 break;
             }
             case "D": {
-                handleD(tasks, parameters);
+                Deadline newDeadline = new Deadline(parameters);
+                tasks.add(newDeadline);
                 break;
             }
             case "E": {
-                handleE(tasks, parameters);
+                Event newEvent = new Event(parameters);
+                tasks.add(newEvent);
                 break;
             }
             default: {
-                System.out.println("Data file data/amon_gus.txt corrupted!");
-                break;
+                throw new DataFileCorruptedException();
             }
             }
-        } catch (DataFileCorruptedException e) {
+        } catch (Exception e) {
             System.out.println("Data file data/amon_gus.txt corrupted!");
         }
-
     }
 
-
-    public static void readFile(ArrayList<Task> tasks) throws FileNotFoundException{
-        File f = new File(AMON_GUS_PATH);
-        Scanner s = new Scanner(f);
-        while (s.hasNext()) {
-            addToTasks(s.nextLine(), tasks);
+    public static void handleFileNotExist() {
+        System.out.println("data/amon_gus.txt not found, creating one now.");
+        try {
+            Path path = Paths.get("data");
+            // If error, then directory exists but file does not
+            Files.createDirectory(path);
+        } catch (IOException e) {
+            // create file in /data directory
+            Paths.get("data/amon_gus.txt");
         }
     }
 
-    public static void fileIO(ArrayList<Task> tasks) {
+    public static void readFile(ArrayList<Task> tasks) throws IOException {
+        File f = new File(Constants.AMON_GUS_PATH);
         try {
-            readFile(tasks);
+            Scanner s = new Scanner(f);
+            while (s.hasNext()) {
+                addToTasks(s.nextLine(), tasks);
+            }
         } catch (FileNotFoundException e) {
-            File f = new File (AMON_GUS_PATH);
+            handleFileNotExist();
         }
     }
 
@@ -277,18 +248,23 @@ public class Duke {
         Scanner in = new Scanner(System.in);
         String line = "";
         ArrayList<Task> tasks = new ArrayList<>();
-        fileIO(tasks);
+        try {
+            readFile(tasks);
+        } catch (IOException e) {
+            System.out.println("Failed to create new data/amon_gus.txt file.\n" + e.getMessage());
+        }
         while (!line.equals("bye")) {
-            System.out.println(LINE_SEPARATOR);
+            System.out.println(Constants.LINE_SEPARATOR);
             System.out.println("To view my commands, type \"help\"\nEnter a Todo, Deadline, or Event: ");
             line = in.nextLine();
             handleCommand(line, tasks);
         }
+
     }
 
     public static void run() {
-        System.out.println(LINE_SEPARATOR);
-        System.out.println("I keep track of your crewmate tasks and find imposters! \nHow can i help you?");
+        System.out.println(Constants.LINE_SEPARATOR);
+        System.out.println("I keep track of your crewmate tasks and find imposters! ");
         readInput();
         System.out.println(Helper.getRandomIntegerBetweenRange(0, 6) == 1 ?
                 "You're the imposter? （°0°） How could you!" :

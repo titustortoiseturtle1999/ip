@@ -1,4 +1,4 @@
-package duke;
+package Constants;
 
 public final class ASCIIconstants {
     private ASCIIconstants () {

@@ -1,8 +1,13 @@
 package task;
+import Constants.Constants;
 
 public class ToDo extends Task{
     public ToDo(String description) {
-        super(description, "T");
+        super(description, Constants.TODO_LABEL);
+    }
+
+    public ToDo(String[] parameters) {
+        super(parameters[2], Constants.TODO_LABEL, parameters[1].equals(Constants.TICK_ICON));
     }
     @Override
     public String toString(boolean showStatus) {
@@ -11,7 +16,7 @@ public class ToDo extends Task{
 
     @Override
     public String formatForFile() {
-        return "T # " + this.getStatusIcon() + " # " + this.getDescription();
+        return this.classLabel + " # " + this.getStatusIcon() + " # " + this.getDescription();
     }
 
 }

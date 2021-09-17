@@ -1,11 +1,17 @@
 package task;
 
+import Constants.Constants;
+
 public class Deadline extends Task{
     protected String by;
 
     public Deadline(String description, String by) {
-        super(description, "D");
+        super(description, Constants.DEADLINE_LABEL);
         this.by = by;
+    }
+    public Deadline(String[] parameters) {
+        super (parameters[2],Constants.DEADLINE_LABEL, parameters[1].equals(Constants.TICK_ICON));
+        this.by = parameters[3];
     }
 
     public String toString() {
@@ -25,6 +31,6 @@ public class Deadline extends Task{
 
     @Override
     public String formatForFile() {
-        return "D # " + this.getStatusIcon() + " # " + this.getDescription() + " # " + this.getBy();
+        return this.classLabel + " # " + this.getStatusIcon() + " # " + this.getDescription() + " # " + this.getBy();
     }
 }
