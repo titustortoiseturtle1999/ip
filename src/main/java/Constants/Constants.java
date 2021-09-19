@@ -6,8 +6,10 @@ public class Constants {
     public static final String TICK_ICON = "✓";
     public static final String FILLED_BOX = "⬛";
     public static final String EMPTY_BOX = "_";
+
     /* data */
     public static final String AMON_GUS_PATH = "data/amon_gus.txt";
+    public static final String AMON_GUS_DIR = "data";
 
     /* Task class */
     public static final String TODO_LABEL = "T";
