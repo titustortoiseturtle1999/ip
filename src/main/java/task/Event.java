@@ -31,6 +31,6 @@ public class Event extends Task{
 
     @Override
     public String formatForFile() {
-        return "E # " + this.getStatusIcon() + " # " + this.getDescription() + " # " + this.getAt();
+        return this.classLabel + " # " + this.getStatusIcon() + " # " + this.getDescription() + " # " + this.getAt();
     }
 }

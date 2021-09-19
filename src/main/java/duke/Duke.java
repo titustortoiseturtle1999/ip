@@ -1,6 +1,5 @@
 package duke;
 
-import Exceptions.DataFileCorruptedException;
 import Exceptions.NoDescriptionException;
 import task.Deadline;
 import task.Event;
@@ -9,13 +8,8 @@ import task.ToDo;
 import Constants.Constants;
 import Constants.ASCIIconstants;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -49,15 +43,12 @@ public class Duke {
         switch (commandParameters[0]) {
         case "todo": {
             try {
-                if (commandParameters.length < 2) {
-                    throw new NoDescriptionException();
-                }
                 String description = line.replace("todo ", "");
                 ToDo newTodo = new ToDo(description);
                 tasks.add(newTodo);
                 System.out.println("new ToDo assigned to you: " + newTodo.getDescription());
-            } catch (NoDescriptionException e) {
-                System.out.println("Trying to assign an empty todo? The audacity.");
+            } catch (Exception e) {
+                System.out.println("The Todo format is: todo <name of todo>");
             }
             break;
         }
@@ -159,24 +150,15 @@ public class Duke {
                 || commandParameters[0].equals("event")) {
             addTask(tasks, line, commandParameters);
             System.out.println("You have " + tasks.size() + " tasks");
+        } else if (line.equals("bye")) {
+            return;
         } else {
             System.out.println("Invalid input!");
         }
-        saveData(tasks);
+        FileIO.saveData(tasks);
     }
 
-    public static void saveData(ArrayList<Task> tasks) {
-        try {
-            FileWriter fw = new FileWriter(Constants.AMON_GUS_PATH);
-            for (Task task: tasks) {
-                fw.write(task.formatForFile());
-                fw.write(System.lineSeparator());
-            }
-            fw.close();
-        } catch (IOException e) {
-            System.out.println("Error while saving to file amon_gus.txt.");
-        }
-    }
+
     public static void deleteTask(String stringIndex, ArrayList<Task> tasks) {
         int index;
         try {
@@ -192,64 +174,13 @@ public class Duke {
         }
     }
 
-    public static void addToTasks(String input, ArrayList<Task> tasks) {
-        String[] parameters = input.split(" # ");
-        try {
-            switch (parameters[0]){
-            case "T": {
-                ToDo newToDo = new ToDo(parameters);
-                tasks.add(newToDo);
-                break;
-            }
-            case "D": {
-                Deadline newDeadline = new Deadline(parameters);
-                tasks.add(newDeadline);
-                break;
-            }
-            case "E": {
-                Event newEvent = new Event(parameters);
-                tasks.add(newEvent);
-                break;
-            }
-            default: {
-                throw new DataFileCorruptedException();
-            }
-            }
-        } catch (Exception e) {
-            System.out.println("Data file data/amon_gus.txt corrupted!");
-        }
-    }
-
-    public static void handleFileNotExist() {
-        System.out.println("data/amon_gus.txt not found, creating one now.");
-        try {
-            Path path = Paths.get("data");
-            // If error, then directory exists but file does not
-            Files.createDirectory(path);
-        } catch (IOException e) {
-            // create file in /data directory
-            Paths.get("data/amon_gus.txt");
-        }
-    }
-
-    public static void readFile(ArrayList<Task> tasks) throws IOException {
-        File f = new File(Constants.AMON_GUS_PATH);
-        try {
-            Scanner s = new Scanner(f);
-            while (s.hasNext()) {
-                addToTasks(s.nextLine(), tasks);
-            }
-        } catch (FileNotFoundException e) {
-            handleFileNotExist();
-        }
-    }
 
     public static void readInput() {
         Scanner in = new Scanner(System.in);
         String line = "";
         ArrayList<Task> tasks = new ArrayList<>();
         try {
-            readFile(tasks);
+            FileIO.readFile(tasks);
         } catch (IOException e) {
             System.out.println("Failed to create new data/amon_gus.txt file.\n" + e.getMessage());
         }
