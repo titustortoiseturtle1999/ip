@@ -16,5 +16,5 @@ public class Constants {
     public static final String DEADLINE_LABEL = "D";
     public static final String EVENT_LABEL = "E";
 
-
+    public static final int PROGRESS_BAR_LENGTH = 20;
 }
