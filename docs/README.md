@@ -110,7 +110,7 @@ Here are the matching tasks in your list:
 1. [E] 2113T lecture (at: Friday 2-4pm)  
 2. [D] watch ST2334 lecture (by: Tuesday 3pm)  
 ```
-:warning: Note: search terms are **C**ase **S**ensitive.
+! Note: search terms are **C**ase **S**ensitive.
 
 ### Mark
 Mark a task as done. Keyword: `done`  
@@ -130,8 +130,8 @@ Exit the Amon Gus program. Keyword: `bye`
 ! Note: Your tasks are automatically saved.
 
 ## Command Summary  
-
-| Command | Usage| 
+    
+| **Command** | **Usage**| 
 | ------- | -----| 
 | Add a todo | `todo <description>`| 
 | Add a deadline | `deadline <description> #<do by>`| 
