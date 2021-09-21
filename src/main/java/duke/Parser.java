@@ -26,7 +26,6 @@ public class Parser {
      * @return True if the command is the exit command, "bye".
      */
     public static boolean handleCommand(String line, TaskList tasks) {
-        System.out.println(line);
         String[] commandParameters = line.split(" ");
         if (line.equals("list")) {
             ListCmd.listTasks(tasks);
