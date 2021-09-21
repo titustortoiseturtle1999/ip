@@ -19,7 +19,7 @@ We recommend users to have basic knowledge of CLI before using Amon Gus.
 
 ## Quick Start
 1. To begin, install Java 11 on your computer. 
-2. Download the latest release of Duke.jar [here](http://github.com/xxxxx).
+2. Download the latest release of Duke.jar [here](https://github.com/titustortoiseturtle1999/ip).
 3. Place the .jar file to where you would like to it be located. 
 4. Using your preferred Command Line Interface, navigate to the directory as specified in step 3.
 5. Execute the command `java -jar Duke.jar` to start Amon Gus.
@@ -79,7 +79,7 @@ Keyword: `help`
 
 ### Add 
 Add a task to your list  
-* Add a Todo. `todo <description> `
+* Add a Todo. `todo <description>`
 * Add a Deadline. `deadline <description> #<do by>`
 * Add an Event. `event <description #<at>`
 
@@ -110,11 +110,11 @@ Here are the matching tasks in your list:
 1. [E] 2113T lecture (at: Friday 2-4pm)  
 2. [D] watch ST2334 lecture (by: Tuesday 3pm)  
 ```
-! Note: search terms are **C**ase **S**ensitive.
+:warning: Note: search terms are **C**ase **S**ensitive.
 
 ### Mark
-Mark a task as done. Keyword: done`  
-Usage: ```done <task no.>```  
+Mark a task as done. Keyword: `done`  
+Usage: `done <task no.>`
 
 Mark a task as not done. Keyword `undo`   
 Usage: `undo <task no.>`
@@ -129,18 +129,19 @@ Display the Amon Gus logo. Keyword: `logo`
 Exit the Amon Gus program. Keyword: `bye`  
 ! Note: Your tasks are automatically saved.
 
-## Command Summary
-Command | Usage
-------- | -----
-Add a todo | `todo <description>`
-Add a deadline | `deadline <description> #<do by>`
-Add an event | `event <description #<at>`
-List all tasks | `list`
-Delete a task | `del <task no.>`
-Find a task | `find <search term>`
-Mark a task as done | `done <task no.>`
-Mark a task as not done | `undo <task no.>`
-Display the Amon Gus logo | `logo`
-Exit Amon Gus | `bye`
+## Command Summary  
+
+| Command | Usage| 
+| ------- | -----| 
+| Add a todo | `todo <description>`| 
+| Add a deadline | `deadline <description> #<do by>`| 
+| Add an event | `event <description #<at>`| 
+| List all tasks | `list`| 
+| Delete a task | `del <task no.>`| 
+| Find a task | `find <search term>`| 
+| Mark a task as done | `done <task no.>`| 
+| Mark a task as not done | `undo <task no.>`| 
+| Display the Amon Gus logo | `logo`| 
+| Exit Amon Gus | `bye`| 
 
 
