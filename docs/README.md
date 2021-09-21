@@ -23,7 +23,7 @@ We recommend users to have basic knowledge of CLI before using Amon Gus.
 3. Place the .jar file to where you would like to it be located. 
 4. Using your preferred Command Line Interface, navigate to the directory as specified in step 3.
 5. Execute the command `java -jar Duke.jar` to start Amon Gus.
-6. Say Hi to the Amon Gus!
+6. Say Hi to Amon Gus!
 ```
 Hello! I'm Amon Gus
 --------------------------------------------------------------
