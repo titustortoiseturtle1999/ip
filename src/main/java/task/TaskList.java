@@ -2,6 +2,9 @@ package task;
 
 import java.util.ArrayList;
 
+/**
+ * An ArrayList of tasks.
+ */
 public class TaskList {
     private final ArrayList<Task> tasks;
 
@@ -21,6 +24,9 @@ public class TaskList {
         tasks.add(task);
     }
 
+    /**
+     * @return The number of competed tasks.
+     */
     public int getNoOfCompleted() {
         int completedTasks = 0;
         for (Task task : tasks) {

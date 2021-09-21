@@ -4,6 +4,9 @@ import task.TaskList;
 import java.util.Scanner;
 
 public class Duke {
+    /**
+     * Main loop that continuously reads in user input till exit.
+     */
     public static void run() {
         TaskList tasks = new TaskList();
         Storage.handleFile(tasks);

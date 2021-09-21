@@ -1,10 +1,13 @@
 package duke;
 
-import Constants.Constants;
-import Constants.ASCIIconstants;
-import Constants.TaskType;
+import constants.Constants;
+import constants.ASCIIconstants;
+import constants.TaskType;
 import task.TaskList;
 
+/**
+ * Handles Input and Output to the user.
+ */
 public class Ui {
     private Ui(){}
 
@@ -24,12 +27,20 @@ public class Ui {
                 Messages.YOU_ARE_NOT_IMPOSTER);
     }
 
+    /**
+     * Displays the users tasks to the command line.
+     * @param tasks The TaskList of the users tasks.
+     */
     public static void printTasks(TaskList tasks) {
         for (int i = 0; i < tasks.getSize(); i++) {
             System.out.println(i + 1 + ". " + tasks.getItem(i).toString(true));
         }
     }
 
+    /**
+     * Displays the progress bar of the users tasks.
+     * @param tasks The TaskList of the users tasks.
+     */
     public static void showProgressBar(TaskList tasks) {
         int totalLength = Constants.PROGRESS_BAR_LENGTH;
         int completedTasks = tasks.getNoOfCompleted();
@@ -57,21 +68,30 @@ public class Ui {
         System.out.println("Events are tasks that start and end at specific times");
     }
 
-    public static String addedTaskMsg(TaskType type) {
+    /**
+     * Identifies the correct message when a new task is added.
+     * @param type The type of task added.
+     * @return A string with the appropriate message.
+     */
+    public static void addedTaskMsg(TaskType type, String taskString) {
         switch (type) {
         case TODO: {
-            return "new Todo assigned to you: ";
+            System.out.print("new Todo assigned to you: ");
+            break;
         }
         case DEADLINE: {
-            return "new Deadline assigned to you: ";
+            System.out.print("new Deadline assigned to you: ");
+            break;
         }
         case EVENT: {
-            return "new Event assigned to you: ";
+            System.out.print("new Event assigned to you: ");
+            break;
         }
         default: {
-            return "new Task assigned to you: ";
+            System.out.print("new Task assigned to you: ");
         }
         }
+        System.out.println(taskString);
     }
 
     public static void showNoOfTasks(TaskList tasks) {

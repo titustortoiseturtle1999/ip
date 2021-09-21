@@ -1,5 +1,8 @@
 package duke;
 
+/**
+ * A collection of the Messages shown to the user.
+ */
 public class Messages {
     public static final String INITIAL_GREETING= "Hello! I'm Amon Gus";
     public static final String SELF_INTRO = "I keep track of your crewmate tasks and find imposters!";

@@ -1,12 +1,18 @@
-package Commands;
+package commands;
 
-import Exceptions.MarkFormatException;
+import exceptions.MarkFormatException;
 import duke.Messages;
 import duke.Parser;
 import duke.Ui;
 import task.TaskList;
 
 public class MarkCmd extends Commands{
+    /**
+     * Mark or unmarks the specified tasks as done.
+     * Prints the appropriate error message if the input is incorrect.
+     * @param commandParameters Array of words input from the user.
+     * @param tasks List of users tasks.
+     */
     public static void MarkTask(String[] commandParameters, TaskList tasks) {
         int index;
         try {
@@ -17,6 +23,7 @@ public class MarkCmd extends Commands{
         Mark(commandParameters[0], tasks, index);
         Ui.showProgressBar(tasks);
     }
+
 
     private static void Mark(String command, TaskList tasks, int index) {
         if (command.equals("done")) {
