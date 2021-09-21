@@ -1,4 +1,4 @@
-package Constants;
+package constants;
 
 public final class ASCIIconstants {
     private ASCIIconstants () {

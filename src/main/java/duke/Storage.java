@@ -1,8 +1,11 @@
 package duke;
 
-import Constants.Constants;
-import Exceptions.DataFileCorruptedException;
-import task.*;
+import constants.Constants;
+import exceptions.DataFileCorruptedException;
+import task.Deadline;
+import task.Event;
+import task.TaskList;
+import task.ToDo;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,13 +14,18 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Storage {
     private Storage() {
     };
 
+    /**
+     * Attempts to read from an existing data/amon_gus.txt file
+     * and add its contents to the users tasks.
+     * @param tasks List of the users tasks.
+     * @throws IOException If there is an error creating a new file should the file not currently exist.
+     */
     public static void readFile(TaskList tasks) throws IOException {
         File f = new File(Constants.AMON_GUS_PATH);
         try {
@@ -30,6 +38,11 @@ public class Storage {
         }
     }
 
+    /**
+     * Adds a task to the users TaskList from the input.
+     * @param input A line from the amon_gus file.
+     * @param tasks TaskList of the users tasks.
+     */
     public static void addToTasks(String input, TaskList tasks) {
         String[] parameters = input.split(" # ");
         try {
@@ -57,6 +70,10 @@ public class Storage {
             System.out.println(Messages.DATA_FILE_CORRUPTED);
         }
     }
+
+    /**
+     * Creates a directory (if required) and an amon_gus.txt file if they do not exit
+     */
     public static void handleFileNotExist() {
         System.out.println(Messages.CREATE_DATA_FILE);
         try {
@@ -67,6 +84,10 @@ public class Storage {
         }
     }
 
+    /**
+     * Writes the users tasks into the data/amon_gus file.
+     * @param tasks TaskList of the users tasks.
+     */
     public static void saveData(TaskList tasks) {
         try {
             FileWriter fw = new FileWriter(Constants.AMON_GUS_PATH);

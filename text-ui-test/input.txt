@@ -1,1 +1,65 @@
+list
+todo
+todo hello
+what is your problem
+helo
+help
+task
+find list
+find
+todo my name is
+deadline wefiwefe
+deadline ewhf ewfwe #f23r32
+event #
+event #weff
+pweefowofw 2
+find event
+find #
+logo 2
+logo
+what is your name
+woewf
+Todo
+help 2
+find tdoo
+todo 2
+todo 7 # wefewf
+deadline 3
+deadline # ewfefwe f# wefwefew
+find dedaline
+del 2
+del 3
+del 0332
+del 4 efe
+event #
+event
+event wefwe####3'
+event wefewfwe #wefwe
+event wefwef #fefew #wfwefwe
+event ######
+del f3 23f
+del 23r32r32r
+del 32r23r
+list
+list 22r32r
+list2
+mark 3
+mark 234
+mark 2
+undo3
+undo 3
+undo 2
+undo 1
+list
+done 90
+done 23
+done2
+done 2
+done w2
+done 3w
+list
+undo 32
+undo 3q
+done 6
+list
 bye

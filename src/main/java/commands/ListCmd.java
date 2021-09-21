@@ -1,11 +1,15 @@
-package Commands;
+package commands;
 
-import Exceptions.NoTasksException;
+import exceptions.NoTasksException;
 import duke.Parser;
 import duke.Ui;
 import task.TaskList;
 
 public class ListCmd {
+    /**
+     * Prints out a list of the users tasks.
+     * @param tasks
+     */
     public static void listTasks(TaskList tasks) {
         try {
             Parser.processList(tasks);

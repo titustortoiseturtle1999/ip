@@ -1,11 +1,17 @@
-package Commands;
+package commands;
 
-import Exceptions.NoDescriptionException;
+import exceptions.NoDescriptionException;
 import duke.Parser;
 import duke.Ui;
 import task.TaskList;
 
 public class FindCmd extends Commands{
+    /**
+     * Finds all the tasks that contain the String input by the user.
+     * @param commandParameters Array of words input by the user.
+     * @param tasks List of the users tasks.
+     * @param line String of users input.
+     */
     public static void findTask(String[] commandParameters, TaskList tasks, String line) {
         String input = "";
         try {

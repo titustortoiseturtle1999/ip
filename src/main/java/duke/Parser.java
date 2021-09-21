@@ -1,23 +1,32 @@
 package duke;
 
-import Commands.AddCmd;
-import Commands.DeleteCmd;
-import Commands.FindCmd;
-import Commands.ListCmd;
-import Commands.LogoCmd;
-import Commands.MarkCmd;
-import Exceptions.DeleteFormatException;
-import Exceptions.MarkFormatException;
-import Exceptions.NoDescriptionException;
-import Exceptions.NoTasksException;
-import Exceptions.WrongLengthException;
+import commands.AddCmd;
+import commands.DeleteCmd;
+import commands.FindCmd;
+import commands.ListCmd;
+import commands.LogoCmd;
+import commands.MarkCmd;
+import constants.TaskType;
+import exceptions.*;
 import task.Deadline;
 import task.Event;
+import task.Task;
 import task.TaskList;
 
+/**
+ * The Parser class filters and organises the User input.
+ */
 public class Parser {
 
+    /**
+     * Identifies the command from the user and calls the appropriate command function.
+     * Prints the NOT_A_COMMAND
+     * @param line String of user input.
+     * @param tasks List of the users tasks.
+     * @return True if the command is the exit command, "bye".
+     */
     public static boolean handleCommand(String line, TaskList tasks) {
+        System.out.println(line);
         String[] commandParameters = line.split(" ");
         if (line.equals("list")) {
             ListCmd.listTasks(tasks);
@@ -45,21 +54,54 @@ public class Parser {
         return false;
     }
 
+    public static String processTodo(String[] commandParameters, String line) throws WrongFormatException {
+        if (commandParameters.length == 1) {
+            System.out.println(Messages.NO_DESCRIPTION);
+            throw new WrongFormatException();
+        }
 
-    public static Deadline processDeadline(String line) {
-        int byIndex = line.indexOf("#");
-        String description = line.substring(0, byIndex - 1);
-        description = description.replace("deadline ", "");
-        return new Deadline(description, line.substring(byIndex + 1));
+        try {
+            return line.replace("todo ", "");
+        } catch (NullPointerException e) {
+            System.out.println(Messages.TODO_FORMAT);
+            throw new WrongFormatException();
+        }
+    }
+
+    /**
+     * Extracts the relevant information from the user input to create a new deadline object
+     * @param line A String of the user input
+     * @return A new Deadline object
+     */
+    public static Task processDnE(String line, TaskType type) throws WrongFormatException{
+        String lineWOPrefix = line.replace(type == TaskType.DEADLINE ? "deadline " : "event ", "");
+        int byIndex = lineWOPrefix.indexOf("#");
+        String description = lineWOPrefix.substring(0, byIndex - 1);
+        if (type == TaskType.DEADLINE) {
+            return new Deadline(description, lineWOPrefix.substring(byIndex + 1));
+        } else if (type == TaskType.EVENT) {
+            return new Event(description, lineWOPrefix.substring(byIndex + 1));
+        } else {
+            System.out.println("Error formatting");
+            throw new WrongFormatException();
+        }
     }
 
     public static Event processEvent(String line) {
-        int byIndex = line.indexOf("#");
-        String description = line.substring(0, byIndex - 1);
-        description = description.replace("event ", "");
-        return new Event(description, line.substring(byIndex + 1));
+        String lineWOPrefix= line.replace("deadline ", "");
+        int byIndex = lineWOPrefix.indexOf("#");
+        String description = lineWOPrefix.substring(0, byIndex - 1);
+        return new Event(description, lineWOPrefix.substring(byIndex + 1));
     }
 
+    /**
+     * Extracts the relevant information from the user input and
+     * checks for formatting errors for the find command.
+     * @param commandParameters Array of words from the user input.
+     * @param line String of user input.
+     * @return A String of the search keyword.
+     * @throws NoDescriptionException If the user did not indicate a keyword.
+     */
     public static String processFind(String[] commandParameters, String line) throws NoDescriptionException {
         if (commandParameters.length == 1) {
             System.out.println(Messages.NO_DESCRIPTION);
@@ -75,14 +117,19 @@ public class Parser {
         }
     }
 
-    public static void checkLength2(String[] commandParameters) throws WrongLengthException {
+    /**
+     * Checks the user input for exactly 2 items.
+     * @param commandParameters Array of words from the user input
+     * @throws WrongLengthException If the length of command parameters is not 2.
+     */
+    private static void checkLength2(String[] commandParameters) throws WrongLengthException {
         if (commandParameters.length != 2) {
             System.out.println(Messages.MISSING_INDEX);
             throw new WrongLengthException();
         }
     }
 
-    public static int checkIndexValid(String stringIndex) throws NumberFormatException{
+    private static int checkIndexValid(String stringIndex) throws NumberFormatException{
         try {
             return Integer.parseInt(stringIndex);
         } catch (NumberFormatException e) {
@@ -92,25 +139,40 @@ public class Parser {
 
     }
 
+    /**
+     * Extracts the relevant information from the user input
+     * and checks if the input format is correct for the command Mark.
+     * @param commandParameters Array of words from the user input.
+     * @param sizeOfTasks The length of the list of users tasks.
+     * @return The number of the task to be marked.
+     * @throws MarkFormatException If there is an error in the input format.
+     */
     public static int processMark(String[] commandParameters, int sizeOfTasks) throws MarkFormatException {
         try {
             checkLength2(commandParameters);
         } catch (WrongLengthException e) {
             throw new MarkFormatException();
         }
-        int index;
+        int number;
         try {
-            index = checkIndexValid(commandParameters[1]);
+            number = checkIndexValid(commandParameters[1]);
         } catch (NumberFormatException e) {
             throw new MarkFormatException();
         }
-        if (index > sizeOfTasks || index <= 0) {
+        if (number > sizeOfTasks || number <= 0) {
             System.out.println(Messages.TASK_NOT_IN_LIST);
             throw new MarkFormatException();
         }
-        return index;
+        return number;
     }
 
+    /**
+     * Extracts the relevant information from the user input
+     * and checks if the input format is correct for the command delete.
+     * @param commandParameters Array of words from the user input.
+     * @return The number of the task to be deleted.
+     * @throws DeleteFormatException If there is an error in the input format.
+     */
     public static int processDelete(String[] commandParameters) throws DeleteFormatException {
         try {
             checkLength2(commandParameters);
@@ -125,4 +187,7 @@ public class Parser {
         }
         return index;
     }
+
+
+
 }
