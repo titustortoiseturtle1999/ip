@@ -23,7 +23,7 @@ public class Deadline extends Task{
      * @param parameters Array of input words that specify the details of the deadline.
      */
     public Deadline(String[] parameters) {
-        super (parameters[2],Constants.DEADLINE_LABEL, parameters[1].equals(Constants.TICK_ICON));
+        super (parameters[2],Constants.DEADLINE_LABEL, parameters[1].equals(String.valueOf(Constants.TICK_ICON)));
         this.by = parameters[3];
     }
 

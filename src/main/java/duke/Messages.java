@@ -6,8 +6,8 @@ package duke;
 public class Messages {
     public static final String INITIAL_GREETING= "Hello! I'm Amon Gus";
     public static final String SELF_INTRO = "I keep track of your crewmate tasks and find imposters!";
-    public static final String YOU_ARE_IMPOSTER = "You're the imposter? （°0°） How could you!";
-    public static final String YOU_ARE_NOT_IMPOSTER = "Yay we found the imposter! ヽ(^o^)ノ The ship is saved!";
+    public static final String YOU_ARE_IMPOSTER = "You're the imposter? (°0°) How could you!";
+    public static final String YOU_ARE_NOT_IMPOSTER = "Yay we found the imposter! \\(^o^)/ The ship is saved!";
 
     public static final String DATA_FILE_CORRUPTED = "Data file data/amon_gus.txt corrupted!";
     public static final String CREATE_DATA_FILE = "data/amon_gus.txt not found, creating one now.";

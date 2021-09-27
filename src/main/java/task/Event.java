@@ -23,7 +23,7 @@ public class Event extends Task{
      * @param parameters Array of input words that specify the details of the deadline.
      */
     public Event(String[] parameters) {
-        super (parameters[2],Constants.EVENT_LABEL, parameters[1].equals(Constants.TICK_ICON));
+        super (parameters[2],Constants.EVENT_LABEL,parameters[1].equals(String.valueOf(Constants.TICK_ICON)));
         this.at = parameters[3];
     }
     @Override

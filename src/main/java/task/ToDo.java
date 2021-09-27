@@ -18,7 +18,7 @@ public class ToDo extends Task{
      * @param parameters Array of input words that specify the details of the deadline.
      */
     public ToDo(String[] parameters) {
-        super(parameters[2], Constants.TODO_LABEL, parameters[1].equals(Constants.TICK_ICON));
+        super(parameters[2], Constants.TODO_LABEL, parameters[1].equals(String.valueOf(Constants.TICK_ICON)));
     }
 
     @Override

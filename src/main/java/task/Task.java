@@ -30,8 +30,8 @@ public class Task {
         this.classLabel = classLabel;
     }
 
-    public String getStatusIcon() {
-        return (isDone ? Constants.TICK_ICON : " ");
+    public char getStatusIcon() {
+        return (isDone ? Constants.TICK_ICON : Constants.NOT_DONE_ICON);
     }
 
     public void setStatus(boolean update) {
